@@ -34,7 +34,8 @@ def selection():
         userselection = input("Do you want to \n 1) Add username and password \n 2) Delete application \n 3) Find username and password \n 4) Display all usernames and passwords \n 5) Exit program \n: ")
         match userselection:
             case '1':
-                add()
+                # handle user error on input
+                if add() > 0: continue
             case '3':
                 find()
             case '2':
@@ -43,8 +44,9 @@ def selection():
             case '4':
                 displayall()
             case'5':
-                sys.exit()
+                break
 
+# This function either returns user error (1) or sucess (0) 
 def add():
     application = input("what is the application or website: ")
     username = input("what is the username: ")
@@ -60,7 +62,7 @@ def add():
             password = input("what is the password: ")
         case _:
             print("Error invalid choice.")
-            selection()
+            return 1
     conn = sqlite3.connect('spassword_database.db')
     cursor = conn.cursor()
     cursor.execute("INSERT INTO passwords_table (application, username, password) VALUES (?, ?, ?)", (application, username, password))
@@ -68,6 +70,7 @@ def add():
     cursor.close()
     conn.close()
     print("Username and password sucessfully added.")
+    return 0
    
 
 def delete(table_name):
